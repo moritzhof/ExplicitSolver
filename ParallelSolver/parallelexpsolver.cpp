@@ -54,24 +54,24 @@ void non_periodic_first_derivative(int npts, double dx, std::vector<double>& u, 
     if(rank == 0){
 
       mpiTemp = u[npts-1];
-      MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI_DOUBLE,1,1,1,1, status);
+      MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI::DOUBLE,1,1,1,1, status);
       u_x[npts-1] = (mpiTemp - u[npts-2])*interval;
 
 
     }
     else if(rank == (totalnodes-1)){
       mpiTemp = u[0];
-      MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI_DOUBLE,rank-1,1, rank-1,1, status);
+      MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI::DOUBLE,rank-1,1, rank-1,1, status);
       u_x[0] = (u[1]-mpiTemp)*interval;
     }
     else{
 
       mpiTemp = u[0];
-      MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI_DOUBLE,rank-1,1, rank-1,1, status);
+      MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI::DOUBLE,rank-1,1, rank-1,1, status);
       u_x[0] = (u[1]-mpiTemp)*interval;
 
       mpiTemp = u[npts-1];
-      MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI_DOUBLE,rank+1,1,rank+1,1, status);
+      MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI::DOUBLE,rank+1,1,rank+1,1, status);
       u_x[npts-1] = (mpiTemp-u[npts-2])*interval;
     }
 
@@ -98,26 +98,26 @@ void non_periodic_second_derivative(int npts, double dx, std::vector<double>& u,
  if(rank == 0){
 
    mpiTemp = u[npts-1];
-   MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI_DOUBLE,1,1,1,1, status);
+   MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI::DOUBLE,1,1,1,1, status);
    u_xx[npts-1] = (mpiTemp - 2.0*u[npts-1] + u[npts-2])*interval;
 
  }
  else if(rank == (totalnodes-1)){
 
    mpiTemp = u[0];
-   MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI_DOUBLE,rank-1,1,rank-1,1, status);
+   MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI::DOUBLE,rank-1,1,rank-1,1, status);
    u_xx[0] = (u[1] - 2.0*u[0] + mpiTemp)*interval;
 
  }
  else{
 
    mpiTemp = u[0];
-   MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI_DOUBLE,rank-1,1,
+   MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI::DOUBLE,rank-1,1,
       rank-1,1,status);
    u_xx[0] = (u[1] -2.0*u[0] + mpiTemp)*interval;
 
    mpiTemp = u[npts-1];
-   MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI_DOUBLE,rank+1,1,
+   MPI::COMM_WORLD.Sendrecv_replace(&mpiTemp,1,MPI::DOUBLE,rank+1,1,
       rank+1,1, status);
    u_xx[npts-1] = (mpiTemp -2.0*u[npts-1] + u[npts-2])*interval;
 
@@ -177,7 +177,7 @@ int main(int argc, char *argv[]){
      non_periodic_second_derivative(local_npts,dx, u, u_xx,totalnodes, rank);
 
      //double approximation;
-     //MPI::COMM_WORLD.Reduce(&ux_error,&answer1,1,MPI_DOUBLE,MPI_SUM,0);
+     //MPI::COMM_WORLD.Reduce(&ux_error,&answer1,1,MPI::DOUBLE,MPI_SUM,0);
 
      if(rank == 0){
      for(std::pair<std::vector<double>::iterator, std::vector<double>::iterator> i(solution.begin(), u_x.begin()); i.first !=solution.end(); ++i.first, ++i.second){
